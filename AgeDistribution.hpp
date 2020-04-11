@@ -20,43 +20,28 @@
 #pragma once
 
 #include <random>
-#include <chrono>
 
 namespace individuals
 {
 
-class Rng
-{
-public:
-    static double get()
+    class AgeDistribution
     {
-        return instance().getImpl();
-    }
-
-private:
-    std::mt19937_64 rng_;
-    std::uniform_real_distribution<double> unif_;
-
-    Rng()
-        : unif_(0.0, 1.0)
-    {
-        // initialize the random number generator with time-dependent seed
-        // uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        uint64_t timeSeed = 12345;
-        std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed>>32)};
-        rng_.seed(ss);
-    }
-
-    static Rng& instance()
-    {
-        static Rng rng;
-        return rng;
-    }
-
-    double getImpl()
-    {
-        return unif_(rng_);
-    }
-};
+    public:
+        AgeDistribution()
+        {
+            std::vector<double> age_brackets = { 0.0, 25.0, 35.0, 45.0, 70.0, 80.0, 95.0 };
+            std::vector<double> weights = { 1.59, 0.75, 0.7, 1.67, 0.44, 0.23 };
+            distr_ = std::piecewise_constant_distribution<double>(age_brackets.begin(),
+                                                                  age_brackets.end(),
+                                                                  weights.begin());
+        }
+        template <class Generator>
+        double operator()(Generator& g)
+        {
+            return distr_(g);
+        }
+    private:
+        std::piecewise_constant_distribution<double> distr_;
+    };
 
 } // namespace individuals

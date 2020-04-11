@@ -34,7 +34,7 @@ public:
         persons_.reserve(size);
         for (std::size_t id = 0; id < size; ++id) {
             persons_.emplace_back(id);
-            persons_.back().addProp(std::make_shared<Covid19State>());
+            // persons_.back().addProp(std::make_shared<Covid19State>());
         }
 
     }

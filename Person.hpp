@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <Covid19State.hpp>
+
 #include <memory>
 #include <vector>
 
@@ -26,7 +28,7 @@ namespace individuals
 {
 
 
-class PersonProperty;
+// class PersonProperty;
 
 
 class Person
@@ -35,28 +37,34 @@ public:
     explicit Person(const std::size_t id)
         : id_(id)
     {}
-    void addProp(std::shared_ptr<PersonProperty>&& prop)
-    {
-        props_.push_back(std::move(prop));
-    }
+    // void addProp(std::shared_ptr<PersonProperty>&& prop)
+    // {
+    //     props_.push_back(std::move(prop));
+    // }
     void stepDay(const int day)
     {
-        for (const auto prop : props_) {
-            prop->stepDay(day);
-        }
+        // for (const auto prop : props_) {
+        //     prop->stepDay(day);
+        // }
+        cv19_state_.stepDay(day);
     }
     bool died() const
     {
-        for (const auto prop : props_) {
-            if (prop->died()) {
-                return true;
-            }
+        // for (const auto prop : props_) {
+        //     if (prop->died()) {
+        //         return true;
+        //     }
+        // }
+        if (cv19_state_.died()) {
+            return true;
         }
         return false;
     }
 private:
     std::size_t id_;
-    std::vector<std::shared_ptr<PersonProperty>> props_;
+    std::size_t age_in_days_;
+    Covid19State cv19_state_;
+    // std::vector<std::shared_ptr<PersonProperty>> props_;
 };
 
 } // namespace individuals
